@@ -133,6 +133,12 @@
     box-shadow:0 6px 14px rgba(233,87,157,.3);}
   .watchBtn:active{transform:scale(.98);}
   .watchBtn svg{width:22px;height:22px;flex:none;}
+  .walkBtn{flex:1;border:none;font-family:inherit;font-weight:800;font-size:15px;cursor:pointer;
+    color:var(--pink-d);background:#ffe0ee;border-radius:16px;padding:13px;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    box-shadow:inset 0 0 0 1.5px rgba(255,143,190,.5);}
+  .walkBtn:active{transform:scale(.98);}
+  .walkBtn svg{width:17px;height:17px;flex:none;}
 
   .timer{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;
     background:rgba(90,42,68,.35);backdrop-filter:blur(6px);}
@@ -184,7 +190,7 @@
     Nouras Gym
     <svg viewBox="0 0 32 29"><path d="M16 29S2 20 2 10a7 7 0 0 1 14-3 7 7 0 0 1 14 3c0 10-14 19-14 19z" fill="#ff8fbe"/></svg>
   </div>
-  <div class="sub">3-Day Split · Push · Pull · Legs</div>
+  <div class="sub">3-Day Split · Push · Pull · Legs<br>+ 20-minute walk every day</div>
 </header>
 
 <div class="tabs" id="tabs"></div>
@@ -213,13 +219,13 @@
 
 <div class="timer" id="timer">
   <div class="timerBox">
-    <h3>Rest Timer</h3>
+    <h3 id="timerTitle">Rest Timer</h3>
     <svg class="tRing" viewBox="0 0 150 150">
       <circle class="bg" cx="75" cy="75" r="63"/>
       <circle class="fg" id="tRingFg" cx="75" cy="75" r="63"/>
     </svg>
     <div class="bigTime" id="bigTime">01:00</div>
-    <div class="timePresets">
+    <div class="timePresets" id="timePresets">
       <button data-sec="30">30s</button>
       <button data-sec="60">1 min</button>
       <button data-sec="90">1.5 min</button>
@@ -254,6 +260,10 @@ const DAYS = [
         {id:"overhead", nm:"Overhead Cable Extension", tip:"Extend your arms fully overhead."},
         {id:"dip", nm:"Triceps Dip Machine", tip:"Lower slowly, then push yourself back up."},
       ]},
+      { name:"Cardio", ex:[
+        {id:"walk_push", nm:"20-Minute Walk", art:"walk", cardio:true, mins:20, yt:"20 minute walking workout",
+         tip:"Finish with a steady 20-minute walk — treadmill or outdoors. Keep an easy pace where you can still talk."},
+      ]},
     ]},
   { id:"pull", name:"Pull", mini:"Back · Biceps · Forearms",
     groups:[
@@ -272,6 +282,10 @@ const DAYS = [
         {id:"revwrist", nm:"Cable Reverse Wrist Curl", tip:"Palms down, lift the wrist upward."},
         {id:"gripmachine", nm:"Wrist Curl Machine (or Grip Machine)", tip:"Grip and squeeze slowly and under control."},
       ]},
+      { name:"Cardio", ex:[
+        {id:"walk_pull", nm:"20-Minute Walk", art:"walk", cardio:true, mins:20, yt:"20 minute walking workout",
+         tip:"Finish with a steady 20-minute walk — treadmill or outdoors. Keep an easy pace where you can still talk."},
+      ]},
     ]},
   { id:"legs", name:"Legs", mini:"Thighs · Calves · Abs",
     groups:[
@@ -289,6 +303,10 @@ const DAYS = [
         {id:"abcrunch", nm:"Ab Crunch Machine", tip:"Fold your torso forward and squeeze your abs."},
         {id:"cablecrunch", nm:"Cable Crunch", tip:"Pull the rope and crunch your torso down."},
         {id:"captain", nm:"Captain's Chair (Leg Raise)", tip:"Raise your knees toward your chest slowly."},
+      ]},
+      { name:"Cardio", ex:[
+        {id:"walk_legs", nm:"20-Minute Walk", art:"walk", cardio:true, mins:20, yt:"20 minute walking workout",
+         tip:"Finish with a steady 20-minute walk — treadmill or outdoors. Keep an easy pace where you can still talk."},
       ]},
     ]},
 ];
@@ -525,6 +543,26 @@ captain: frame(
   +L(119,68,119,104,C.body,W.torso)+head(117,50)
   +L(118,70,106,78,C.body,W.ua)+L(106,78,97,76,C.body,W.fa)
   +G(119,104,"--r0:-75deg", L(119,104,94,96,C.body,W.thigh)+L(94,96,92,120,C.body,W.shin)+L(92,120,86,123,C.body,5))),
+
+/* 20-minute walk: drawn mid-stride (so the still thumbnail reads as walking),
+   then the limbs swap through a full stride cycle. */
+walk: frame(
+  L(30,141,170,141,C.fr,4)
+  +G(0,0,"--ty0:-2px;--ty1:1px",
+    head(100,44)+L(100,52,100,96,C.body,W.torso)
+    /* trailing leg: knee bends as it swings through to the front */
+    +G(100,96,"--r0:-4deg;--r1:15deg",
+      L(100,96,90,118,C.deep,W.thigh)
+      +G(90,118,"--r0:4deg;--r1:-13deg",
+        L(90,118,88,138,C.deep,W.shin)+L(88,138,80,140,C.deep,5)))
+    /* leading leg: planted, then bends as it pushes back */
+    +G(100,96,"--r0:4deg;--r1:-15deg",
+      L(100,96,110,118,C.body,W.thigh)
+      +G(110,118,"--r0:-4deg;--r1:20deg",
+        L(110,118,112,138,C.body,W.shin)+L(112,138,122,140,C.body,5)))
+    /* arms counter-swing against the legs */
+    +G(100,60,"--r0:-5deg;--r1:18deg", L(100,60,109,80,C.deep,W.ua)+L(109,80,106,96,C.deep,W.fa))
+    +G(100,60,"--r0:5deg;--r1:-18deg", L(100,60,91,80,C.body,W.ua)+L(91,80,94,96,C.body,W.fa)))),
 };
 function illu(id){return ILLU[id] || frame(head(100,60)+L(100,70,100,110,C.body,W.torso));}
 const CHECK_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -563,29 +601,36 @@ function render(){
   let html="";
   day.groups.forEach(g=>{
     html+=`<div class="group"><div class="groupHead"><span class="dot"></span><h2>${g.name}</h2>
-      <span class="cnt">${g.ex.length} exercises</span></div>`;
+      <span class="cnt">${g.ex.length} exercise${g.ex.length>1?"s":""}</span></div>`;
     g.ex.forEach(ex=>{
       const done=exDone(ex.id), s=setsOf(ex.id);
-      html+=`<div class="card${openCards.has(ex.id)?" open":""}" data-card="${ex.id}">
+      const stats = ex.cardio
+        ? `<div class="stat"><div class="v">${ex.mins}</div><div class="l">Minutes</div></div>
+           <div class="stat"><div class="v">Easy</div><div class="l">Pace</div></div>`
+        : `<div class="stat"><div class="v">${SETS}</div><div class="l">Sets</div></div>
+           <div class="stat"><div class="v">${REPS}</div><div class="l">Reps</div></div>`;
+      const controls = ex.cardio
+        ? `<div class="setRow">
+             <button class="walkBtn" data-walk="${ex.mins}">${CLOCK_SVG} Start ${ex.mins}:00 walk</button>
+           </div>`
+        : `<div class="setRow" data-sets="${ex.id}">
+             <span class="lbl">Sets:</span>
+             ${[0,1,2].map(i=>`<div class="setDot ${s[i]?"on":""}" data-set="${i}">${i+1}</div>`).join("")}
+             <button class="restBtn" data-rest>${CLOCK_SVG} Rest</button>
+           </div>`;
+      html+=`<div class="card${openCards.has(ex.id)?" open":""}${ex.cardio?" cardio":""}" data-card="${ex.id}">
         <div class="cardHead" data-toggle>
-          <div class="thumb">${illu(ex.id)}</div>
+          <div class="thumb">${illu(ex.art||ex.id)}</div>
           <div class="info"><div class="nm">${ex.nm}</div><div class="mg">${g.name}</div></div>
           <div class="check ${done?"done":""}" data-check="${ex.id}">${CHECK_SVG}</div>
           <div class="chev">${CHEV_SVG}</div>
         </div>
         <div class="detail"><div class="detailIn">
-          <div class="hero live">${illu(ex.id)}</div>
-          <div class="stats">
-            <div class="stat"><div class="v">${SETS}</div><div class="l">Sets</div></div>
-            <div class="stat"><div class="v">${REPS}</div><div class="l">Reps</div></div>
-          </div>
+          <div class="hero live">${illu(ex.art||ex.id)}</div>
+          <div class="stats">${stats}</div>
           <div class="tip">${ex.tip}</div>
-          <a class="watchBtn" href="${ytLink(ex.nm)}" target="_blank" rel="noopener">${YT_SVG} Watch on YouTube</a>
-          <div class="setRow" data-sets="${ex.id}">
-            <span class="lbl">Sets:</span>
-            ${[0,1,2].map(i=>`<div class="setDot ${s[i]?"on":""}" data-set="${i}">${i+1}</div>`).join("")}
-            <button class="restBtn" data-rest>${CLOCK_SVG} Rest</button>
-          </div>
+          <a class="watchBtn" href="${ytLink(ex.yt||ex.nm)}" target="_blank" rel="noopener">${YT_SVG} Watch on YouTube</a>
+          ${controls}
         </div></div>
       </div>`;
     });
@@ -603,6 +648,8 @@ app.addEventListener("click",(e)=>{
   const dot=e.target.closest("[data-set]");
   if(dot){ const id=dot.closest("[data-sets]").dataset.sets; const i=+dot.dataset.set; const before=dayPct().pct;
     const s=setsOf(id); s[i]=!s[i]; save(); render(); maybeCelebrate(before); return; }
+  const walk=e.target.closest("[data-walk]");
+  if(walk){ openTimer(+walk.dataset.walk*60, "Walking Session", walk.closest("[data-card]").dataset.card); return; }
   if(e.target.closest("[data-rest]")){ openTimer(60); return; }
   const head=e.target.closest("[data-toggle]");
   if(head){ const card=head.closest(".card"); const id=card.dataset.card;
@@ -667,15 +714,25 @@ const timerEl=document.getElementById("timer");
 const bigTime=document.getElementById("bigTime");
 const tRingFg=document.getElementById("tRingFg");
 const T_C=2*Math.PI*63; tRingFg.style.strokeDasharray=T_C;
-let total=60, left=60, tick=null;
+let total=60, left=60, tick=null, walkId=null;
 function fmt(s){const m=Math.floor(s/60),ss=s%60;return String(m).padStart(2,"0")+":"+String(ss).padStart(2,"0");}
 function drawTimer(){ bigTime.textContent=fmt(left); tRingFg.style.strokeDashoffset=T_C*(1-left/total); }
-function openTimer(sec=60){ total=sec; left=sec; drawTimer(); timerEl.classList.add("show"); startTick(); }
+function openTimer(sec=60, title="Rest Timer", completeId=null){
+  total=sec; left=sec; walkId=completeId;
+  document.getElementById("timerTitle").textContent=title;
+  document.getElementById("timePresets").style.display = completeId ? "none" : "flex";
+  document.getElementById("tAdd").textContent = completeId ? "+1 min" : "+15s";
+  drawTimer(); timerEl.classList.add("show"); startTick();
+}
 function startTick(){ clearInterval(tick); tick=setInterval(()=>{ left--; if(left<=0){ left=0; drawTimer(); clearInterval(tick);
-   toast("Rest over — let's go!"); if(navigator.vibrate) navigator.vibrate([200,100,200]); setTimeout(closeTimer,700); return;} drawTimer(); },1000); }
-function closeTimer(){ clearInterval(tick); timerEl.classList.remove("show"); }
+   if(navigator.vibrate) navigator.vibrate([200,100,200]);
+   if(walkId){ const before=dayPct().pct; store[walkId]=[true,true,true]; save(); render();
+     toast("Walk complete — well done!"); maybeCelebrate(before); }
+   else toast("Rest over — let's go!");
+   setTimeout(closeTimer,700); return;} drawTimer(); },1000); }
+function closeTimer(){ clearInterval(tick); walkId=null; timerEl.classList.remove("show"); }
 document.getElementById("tClose").addEventListener("click",closeTimer);
-document.getElementById("tAdd").addEventListener("click",()=>{ left+=15; total=Math.max(total,left); drawTimer(); });
+document.getElementById("tAdd").addEventListener("click",()=>{ left+=walkId?60:15; total=Math.max(total,left); drawTimer(); });
 document.querySelectorAll(".timePresets button").forEach(b=>b.addEventListener("click",()=>openTimer(+b.dataset.sec)));
 timerEl.addEventListener("click",(e)=>{ if(e.target===timerEl) closeTimer(); });
 
