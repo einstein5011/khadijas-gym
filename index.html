@@ -7,10 +7,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Nouras Gym">
+<meta name="apple-mobile-web-app-title" content="Khadijas Gym">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<title>Nouras Gym</title>
+<title>Khadijas Gym</title>
 <style>
   :root{
     --bg1:#fff0f6; --bg2:#ffe0ee;
@@ -187,7 +187,7 @@
 <header>
   <div class="title">
     <svg viewBox="0 0 32 29"><path d="M16 29S2 20 2 10a7 7 0 0 1 14-3 7 7 0 0 1 14 3c0 10-14 19-14 19z" fill="#ff8fbe"/></svg>
-    Nouras Gym
+    Khadijas Gym
     <svg viewBox="0 0 32 29"><path d="M16 29S2 20 2 10a7 7 0 0 1 14-3 7 7 0 0 1 14 3c0 10-14 19-14 19z" fill="#ff8fbe"/></svg>
   </div>
   <div class="sub">3-Day Split · Push · Pull · Legs<br>+ 20-minute walk every day</div>
@@ -215,7 +215,7 @@
 
 <main id="app"></main>
 
-<footer>Made with love for Noura</footer>
+<footer>Made with love for Khadija</footer>
 
 <div class="timer" id="timer">
   <div class="timerBox">
@@ -681,7 +681,7 @@ function updateProgress(){
   document.getElementById("progLabel").textContent = pct===0?"Let's begin" : pct<100?"Keep going!" : "Day complete!";
 }
 function maybeCelebrate(before){
-  if(dayPct().pct===100 && before<100){ celebrate(); toast("Great job, Noura! Day complete"); }
+  if(dayPct().pct===100 && before<100){ celebrate(); toast("Great job, Khadija! Day complete"); }
 }
 document.getElementById("resetDay").addEventListener("click",()=>{
   DAYS[current].groups.flatMap(g=>g.ex).forEach(e=>store[e.id]=[false,false,false]);

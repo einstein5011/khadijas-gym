@@ -1,7 +1,7 @@
 {
-  "name": "Nouras Gym",
-  "short_name": "Nouras Gym",
-  "description": "Noura's 3-day workout program",
+  "name": "Khadijas Gym",
+  "short_name": "Khadijas Gym",
+  "description": "Khadija's 3-day workout program",
   "lang": "en",
   "dir": "ltr",
   "start_url": "./index.html",
